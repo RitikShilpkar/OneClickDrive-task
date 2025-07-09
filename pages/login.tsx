@@ -13,14 +13,20 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    if (username && password) {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
       localStorage.setItem("token", "mock-token");
       addMessage('success', 'Login successful!');
       setTimeout(() => {
         router.push("/dashboard");
       }, 1000);
     } else {
-      addMessage('error', 'Username and password are required');
+      addMessage('error', data.message || 'Incorrect username or password');
       setLoading(false);
     }
   };
