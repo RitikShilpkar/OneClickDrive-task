@@ -113,7 +113,12 @@ export default function DashboardPage({ listings: initialListings, page, status,
         </Link>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-2xl shadow-lg border border-gray-200">
+      <div className="overflow-x-auto bg-white rounded-2xl shadow-lg border border-gray-200 relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10">
+            <span className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></span>
+          </div>
+        )}
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50 sticky top-0">
             <tr>
