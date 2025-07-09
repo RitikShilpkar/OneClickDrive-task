@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import TableRow from '../../src/components/TableRow';
 import { HiOutlinePlus, HiOutlineArrowLeft, HiOutlineArrowRight, HiOutlineClipboardList } from 'react-icons/hi';
@@ -39,14 +39,25 @@ export const getServerSideProps: GetServerSideProps<DashboardProps> = async (con
   };
 };
 
-export default function DashboardPage({ listings, page, status, totalPages }: DashboardProps) {
+export default function DashboardPage({ listings: initialListings, page, status, totalPages }: DashboardProps) {
   const router = useRouter();
+  const [listings, setListings] = useState(initialListings);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       if (!token) router.replace("/login");
     }
   }, [router]);
+
+  const fetchListings = async () => {
+    setLoading(true);
+    const res = await fetch(`/api/listings?page=${page}&limit=${LIMIT}&status=${status}`);
+    const data = await res.json();
+    setListings(data.listings);
+    setLoading(false);
+  };
 
   const sortedListings = [...listings].sort((a, b) => b.id - a.id);
 
@@ -127,6 +138,7 @@ export default function DashboardPage({ listings, page, status, totalPages }: Da
                   key={listing.id}
                   listing={listing}
                   className={`${idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}
+                  onStatusChange={fetchListings}
                 />
               ))
             )}
