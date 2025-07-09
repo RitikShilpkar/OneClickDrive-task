@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { useEffect, useState } from 'react';
 import Link from "next/link";
 
 interface AuditEntry {
@@ -8,22 +8,42 @@ interface AuditEntry {
   timestamp: string;
 }
 
-interface AuditLogProps {
-  log: AuditEntry[];
-}
+export default function AuditLogPage() {
+  const [log, setLog] = useState<AuditEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-export const getServerSideProps: GetServerSideProps<AuditLogProps> = async (context) => {
-  const baseUrl = context.req.headers.host ? `http://${context.req.headers.host}` : 'http://localhost:3000';
-  const res = await fetch(`${baseUrl}/api/audit`);
-  const log = await res.json();
-  return {
-    props: {
-      log,
-    },
-  };
-};
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+    fetch('/api/audit', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(res => {
+        if (res.status === 401) {
+          window.location.href = '/login';
+          return null;
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data) setLog(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Failed to load audit log');
+        setLoading(false);
+      });
+  }, []);
 
-export default function AuditLogPage({ log }: AuditLogProps) {
+  if (loading) return <div className="p-8 text-gray-600">Loading...</div>;
+  if (error) return <div className="p-8 text-red-600">{error}</div>;
+
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">

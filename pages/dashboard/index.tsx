@@ -60,13 +60,22 @@ export default function DashboardPage({ listings, page, status, totalPages }: Da
           </h1>
           <p className="mt-2 text-gray-600 text-lg">Manage, approve, reject, or edit user-submitted car rental listings.</p>
         </div>
-        <Link
-          href="/dashboard/new"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition"
-        >
-          <HiOutlinePlus className="text-xl" />
-          Add New Listing
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Link
+            href="/dashboard/new"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition"
+          >
+            <HiOutlinePlus className="text-xl" />
+            Add New Listing
+          </Link>
+          <Link
+            href="/dashboard/audit"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gray-200 text-blue-700 font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition"
+          >
+            <HiOutlineClipboardList className="text-xl" />
+            View Audit Log
+          </Link>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between bg-white border border-gray-200 rounded-xl px-5 py-4 mb-8 shadow">
