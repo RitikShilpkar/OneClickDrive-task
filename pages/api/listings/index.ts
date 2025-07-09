@@ -1,6 +1,22 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-let listings = [
+type Listing = {
+  id: number;
+  title: string;
+  status: string;
+  price: number;
+  location: string;
+  owner: string;
+};
+
+type AuditLogEntry = {
+  action: string;
+  listingId: number;
+  admin: string;
+  timestamp: string;
+};
+
+const listings: Listing[] = [
   {
     id: 1,
     title: "Toyota Camry",
@@ -83,7 +99,7 @@ let listings = [
   },
 ];
 
-let auditLog: any[] = [];
+const auditLog: AuditLogEntry[] = [];
 
 export { listings, auditLog };
 
@@ -91,15 +107,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     const { page = 1, limit = 5, status } = req.query;
     let filtered = listings;
-    
     if (status && status !== "all") {
       filtered = listings.filter(l => l.status === status);
     }
-    
     const start = (Number(page) - 1) * Number(limit);
     const end = start + Number(limit);
     const paginated = filtered.slice(start, end);
-    
     return res.status(200).json({
       listings: paginated,
       total: filtered.length,
@@ -107,13 +120,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       limit: Number(limit),
     });
   }
-  
   if (req.method === 'POST') {
     const data = req.body;
-    const newListing = { ...data, id: Date.now(), status: "pending" };
+    const newListing: Listing = { ...data, id: Date.now(), status: "pending" };
     listings.push(newListing);
     return res.status(201).json(newListing);
   }
-  
   return res.status(405).json({ message: 'Method not allowed' });
 } 

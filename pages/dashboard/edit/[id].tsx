@@ -2,10 +2,20 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useMessages } from "../../../src/context/MessageContext";
 
+// Listing type for type safety
+interface Listing {
+  id: number;
+  title: string;
+  status: string;
+  price: number;
+  location: string;
+  owner: string;
+}
+
 export default function EditListingPage() {
   const router = useRouter();
   const { id } = router.query;
-  const [listing, setListing] = useState<any>(null);
+  const [listing, setListing] = useState<Listing | null>(null);
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
   const [location, setLocation] = useState("");
@@ -17,8 +27,8 @@ export default function EditListingPage() {
       fetch(`/api/listings?limit=100`)
         .then(res => res.json())
         .then(data => {
-          const found = data.listings.find((l: any) => l.id == id);
-          setListing(found);
+          const found: Listing | undefined = data.listings.find((l: Listing) => l.id === Number(id));
+          setListing(found || null);
           setTitle(found?.title || "");
           setPrice(found?.price || 0);
           setLocation(found?.location || "");
