@@ -18,7 +18,6 @@ interface Listing {
 
 interface DashboardProps {
   listings: Listing[];
-  total: number;
   page: number;
   status: string;
   totalPages: number;
@@ -33,7 +32,6 @@ export const getServerSideProps: GetServerSideProps<DashboardProps> = async (con
   return {
     props: {
       listings: data.listings,
-      total: data.total,
       page: Number(page),
       status: String(status),
       totalPages,
@@ -41,7 +39,7 @@ export const getServerSideProps: GetServerSideProps<DashboardProps> = async (con
   };
 };
 
-export default function DashboardPage({ listings, total, page, status, totalPages }: DashboardProps) {
+export default function DashboardPage({ listings, page, status, totalPages }: DashboardProps) {
   const router = useRouter();
   useEffect(() => {
     if (typeof window !== "undefined") {

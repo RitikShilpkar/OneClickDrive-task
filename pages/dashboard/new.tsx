@@ -20,8 +20,8 @@ export default function NewListingPage() {
       });
       addMessage('success', 'New listing created successfully!');
       router.push("/dashboard?page=1");
-    } catch (error) {
-      addMessage('error', 'Failed to create listing');
+    } catch {
+      addMessage('error', 'Failed to add listing');
     }
   };
 

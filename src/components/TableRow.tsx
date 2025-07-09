@@ -1,8 +1,18 @@
 import React from "react";
 import Link from "next/link";
 
+// Listing type for type safety
+interface Listing {
+  id: number;
+  title: string;
+  status: string;
+  price: number;
+  location: string;
+  owner: string;
+}
+
 interface TableRowProps {
-  listing: any;
+  listing: Listing;
   className?: string;
 }
 

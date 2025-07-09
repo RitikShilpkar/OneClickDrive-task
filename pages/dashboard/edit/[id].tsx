@@ -47,7 +47,7 @@ export default function EditListingPage() {
       });
       addMessage('success', 'Listing updated successfully!');
       router.push("/dashboard");
-    } catch (error) {
+    } catch {
       addMessage('error', 'Failed to update listing');
     }
   };
