@@ -43,6 +43,7 @@ export default function DashboardPage({ listings: initialListings, page, status,
   const router = useRouter();
   const [listings, setListings] = useState(initialListings);
   const [loading, setLoading] = useState(false);
+  const [loadingRowId, setLoadingRowId] = useState<number | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -144,6 +145,8 @@ export default function DashboardPage({ listings: initialListings, page, status,
                   listing={listing}
                   className={`${idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}
                   onStatusChange={fetchListings}
+                  loadingRowId={loadingRowId}
+                  setLoadingRowId={setLoadingRowId}
                 />
               ))
             )}
