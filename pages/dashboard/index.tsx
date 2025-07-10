@@ -39,11 +39,13 @@ export const getServerSideProps: GetServerSideProps<DashboardProps> = async (con
   };
 };
 
-export default function DashboardPage({ listings: initialListings, page, status, totalPages }: DashboardProps) {
+export default function DashboardPage({ listings: initialListings, totalPages }: DashboardProps) {
   const router = useRouter();
   const [listings, setListings] = useState(initialListings);
-  const [loading, setLoading] = useState(false);
   const [loadingRowId, setLoadingRowId] = useState<number | null>(null);
+
+  const page = Number(router.query.page) || 1;
+  const status = typeof router.query.status === 'string' ? router.query.status : "all";
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -52,15 +54,24 @@ export default function DashboardPage({ listings: initialListings, page, status,
     }
   }, [router]);
 
+  useEffect(() => {
+    setListings(initialListings);
+  }, [initialListings]);
+
   const fetchListings = async () => {
-    setLoading(true);
     const res = await fetch(`/api/listings?page=${page}&limit=${LIMIT}&status=${status}`);
     const data = await res.json();
     setListings(data.listings);
-    setLoading(false);
   };
 
+  useEffect(() => {
+    fetchListings();
+  }, [page, status]);
+
   const sortedListings = [...listings].sort((a, b) => b.id - a.id);
+
+  console.log(listings);
+  
 
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -114,12 +125,7 @@ export default function DashboardPage({ listings: initialListings, page, status,
         </Link>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-2xl shadow-lg border border-gray-200 relative">
-        {loading && (
-          <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10">
-            <span className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></span>
-          </div>
-        )}
+      <div className="overflow-x-auto bg-white rounded-2xl shadow-lg border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50 sticky top-0">
             <tr>
